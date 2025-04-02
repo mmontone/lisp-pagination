@@ -55,11 +55,11 @@
 (in-package :mupaginator)
 
 (defstruct pagination
+  "SOURCE is either a function designator or a sequence.
+When source is a function designator, then it is called with a page number
+and is expected to return two values: the items of that page, and the total number of items"
   (current 1 :type integer)
   (page-size 10 :type integer)
-  ;; SOURCE is either a function designator or a sequence.
-  ;; When source is a function designator, then it is called with a page number
-  ;; and is expected to return two values: the items of that page, and the total number of items
   (source nil :type (or trivial-types:function-designator sequence)))
 
 (defun pagination-prev (pagination)

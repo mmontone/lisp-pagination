@@ -19,7 +19,7 @@
 (defwidget packages-list (reblocks/paginated-list:paginated-list)
   ())
 
-(defmethod reblocks/paginated:paginated-list-source ((paginated-list packages-list))
+(defmethod reblocks/paginated-list:paginated-list-source ((paginated-list packages-list))
   (list-all-packages))
 
 (defmethod render ((widget packages-list))
