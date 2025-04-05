@@ -79,7 +79,7 @@ and is expected to return two values: the items of that page, and the total numb
      (multiple-value-bind (items total)
          (funcall (pagination-source pagination) (pagination-current pagination))
        (assert (integerp total) nil "Second value returned by pagination-source of ~s is expected to be the total number of items, but ~s was returned." pagination total)
-       (values items (truncate (/ total (pagination-page-size pagination))))))
+       (values items (ceiling (/ total (pagination-page-size pagination))))))
     (sequence
      (values
       (let ((start (* (1- (pagination-current pagination))
@@ -88,7 +88,7 @@ and is expected to return two values: the items of that page, and the total numb
                 start
                 (min (+ start (pagination-page-size pagination))
                      (length (pagination-source pagination)))))
-      (truncate (/ (length (pagination-source pagination))
+      (ceiling (/ (length (pagination-source pagination))
                    (pagination-page-size pagination)))))))
 
 (defun pagination-total (pagination)
@@ -248,12 +248,12 @@ See: https://getbootstrap.com/docs/4.1/components/pagination/"
                      :href (when href (funcall href 1))
                      :onclick (when on-click (funcall on-click 1))
                      (who:str (who:escape-string "<<"))))))
-         (when (and prev-and-next-buttons (pagination-prev pagination))
+         (when prev-and-next-buttons
            (who:htm
             (:li :class "page-item"
                  (:a :class "page-link"
-                     :href (when href (funcall href (pagination-prev pagination)))
-                     :onclick (when on-click (funcall on-click (pagination-prev pagination)))
+                     :href (when (and (pagination-prev pagination) href) (funcall href (pagination-prev pagination)))
+                     :onclick (when (and (pagination-prev pagination) on-click) (funcall on-click (pagination-prev pagination)))
                      (who:str (who:escape-string "<"))))))
          (dolist (button (pagination-buttons pagination :padding padding
                                                         :use-ellipsis use-ellipsis
@@ -267,12 +267,12 @@ See: https://getbootstrap.com/docs/4.1/components/pagination/"
                          :href (when href (funcall href button))
                          :onclick (when on-click (funcall on-click button))
                          (who:str button))))))
-         (when (and prev-and-next-buttons (pagination-next pagination))
+         (when prev-and-next-buttons
            (who:htm
             (:li :class "page-item"
                  (:a :class "page-link"
-                     :href (when href (funcall href (pagination-next pagination)))
-                     :onclick (when on-click (funcall on-click (pagination-next pagination)))
+                     :href (when (and (pagination-next pagination) href) (funcall href (pagination-next pagination)))
+                     :onclick (when (and (pagination-next pagination) on-click) (funcall on-click (pagination-next pagination)))
                      (who:str (who:escape-string ">"))))))
          (when first-and-last-buttons
            (who:htm
